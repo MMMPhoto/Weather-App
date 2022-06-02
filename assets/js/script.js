@@ -1,8 +1,23 @@
 let body = document.body;
-let text = document.createElement('p');
+let inputForm = document.createElement('form');
+let inputBox = document.createElement('input');
+let submitButton = document.createElement('button');
 
-text.innerHTML = "Text Test";
+inputBox.setAttribute('type', 'text');
+submitButton.innerHTML = 'Submit';
 
+body.append(inputForm);
+inputForm.append(inputBox);
+inputForm.append(submitButton);
 
-body.append(text);
+let apiKey = '3a8edcb6a734dc2c076a743098ed3084';
+let searchQuery = 'Columbus,GA,USA';
 
+fetch(`https://api.openweathermap.org/data/2.5/weather?q=${searchQuery}&APPID=${apiKey}`)
+  .then(response => {
+    console.log(`fetch status: code ${response.status}`);
+    return response.json();
+  })
+  .then(data => {
+    console.log(data);
+  });
