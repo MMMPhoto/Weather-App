@@ -2,6 +2,7 @@ let body = document.body;
 let inputForm = document.createElement('form');
 let inputBox = document.createElement('input');
 let submitButton = document.createElement('button');
+let testArray = ['Atlanta', 'Atlantis', 'Atalanta'];
 
 fetch('./assets/js/current.city.list.json')
     .then(response => {
@@ -27,3 +28,9 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?q=${searchQuery}&APPID=${
     .then(data => {
         console.log(data);
     });
+
+$(inputBox).autocomplete( {
+    appendTo: inputForm,
+    minLength: 2,
+    source: testArray
+});
