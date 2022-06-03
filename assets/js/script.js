@@ -3,12 +3,30 @@ let inputForm = document.createElement('form');
 let inputBox = document.createElement('input');
 let submitButton = document.createElement('button');
 let testArray = ['Atlanta', 'Atlantis', 'Atalanta'];
+let rawCityList = [];
+let easyCityList = [];
+let city = {};
 
-fetch('./assets/js/current.city.list.json')
+// Pull City List
+fetch('./assets/js/city.list.json')
     .then(response => {
         return response.json();
     })
-    .then(jsondata => console.log(jsondata));
+    .then(jsondata => {
+        rawCityList = jsondata;
+        console.log(rawCityList);
+
+        // Refine City List
+        for (i = 0; i < rawCityList.length; i++) {
+            if (rawCityList[i].state === "") {
+                easyCityList.push(`${rawCityList[i].name},${rawCityList[i].country}`);
+            } else {
+                easyCityList.push(`${rawCityList[i].name},${rawCityList[i].state},${rawCityList[i].country}`);
+            };            
+        };
+    });
+
+console.log(easyCityList);
 
 inputBox.setAttribute('type', 'text');
 submitButton.innerHTML = 'Submit';
@@ -31,6 +49,6 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?q=${searchQuery}&APPID=${
 
 $(inputBox).autocomplete( {
     appendTo: inputForm,
-    minLength: 2,
-    source: testArray
+    minLength: 3,
+    source: easyCityList
 });
