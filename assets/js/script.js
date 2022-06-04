@@ -1,24 +1,19 @@
+// Define variables
 let body = document.body;
-let inputForm = document.createElement('form');
-let inputBox = document.createElement('input');
-let submitButton = document.createElement('button');
+let inputForm = document.getElementById('search-form');
+let inputBox = document.getElementById('input-box');
+let submitButton = document.getElementById('submit-button');
 let rawCityList = [];
 let easyCityList = [];
-let city = {};
 let apiKey = '3a8edcb6a734dc2c076a743098ed3084';
 let searchQuery;
 let weatherData;
 let lat;
 let long;
-
-
-
-// let jsondata = require('./assets/js/city.list.json');
-// console.log(jsondata);
-
+let newSearch = true;
 
 // Pull City List
-fetch('./assets/js/city.list.json')
+fetch('https://raw.githubusercontent.com/MMMPhoto/Weather-App/main/assets/js/city.list.json')
     .then(response => {
         return response.json();
     })
@@ -38,12 +33,10 @@ fetch('./assets/js/city.list.json')
 
 console.log(easyCityList);
 
-inputBox.setAttribute('type', 'text');
-submitButton.innerHTML = 'Submit';
-
-body.append(inputForm);
-inputForm.append(inputBox);
-inputForm.append(submitButton);
+// Build elements
+let recentSearches = document.getElementById('recent-searches');
+let currentWeather = document.getElementById('current-weather');
+let fiveDayForcast = document.getElementById('five-day-forecast');
 
 $(inputBox).autocomplete( {
     appendTo: inputForm,
@@ -60,22 +53,46 @@ let weatherFetch = (lat, lon) => {
     .then(data => {
         console.log(data);
         weatherData = data;
-        weatherDisplay(weatherData);   
+        weatherDisplay(weatherData);
     });
 };
 
 let weatherDisplay = (weatherData) => {
-    let weatherContainer = document.createElement('div');
-    weatherContainer.innerHTML = `${cityName}<br>Temp: ${weatherData.current.temp}<br>Wind speed: ${weatherData.current.wind_speed}<br>Humidity: ${weatherData.current.humidity}%<br>UV Index: ${weatherData.current.uvi}`;
-    body.append(weatherContainer);
-}
+    currentWeather.innerHTML = `${cityName}<br>Temp: ${weatherData.current.temp}<br>Wind speed: ${weatherData.current.wind_speed}<br>Humidity: ${weatherData.current.humidity}%<br>UV Index: ${weatherData.current.uvi}`;
+    if (newSearch) {
+        createRecentButton();
+    }
+};
 
+let createRecentButton = (button) => {
+    button = document.createElement('button');
+    button.setAttribute('id', `${cityTag}`);
+    button.setAttribute('class', 'city-button');
+    button.textContent = cityName;
+    recentSearches.append(button);
+};
+
+// Listen for search query
 submitButton.addEventListener("click", (event) => {
     event.preventDefault();
+    newSearch = true;
     searchQuery = inputBox.value;
     let index = easyCityList.indexOf(searchQuery);
     lat = rawCityList[index].coord.lat;
     lon = rawCityList[index].coord.lon;
     cityName = rawCityList[index].name;
+    cityTag = inputBox.value;
     weatherFetch(lat, lon);
 });
+
+recentSearches.addEventListener("click", (event) => {
+    event.preventDefault();
+    newSearch = false;
+    let recallSearch = event.target.id;
+    let index = easyCityList.indexOf(recallSearch);
+    lat = rawCityList[index].coord.lat;
+    lon = rawCityList[index].coord.lon;
+    cityName = rawCityList[index].name;
+    weatherFetch(lat, lon);
+});
+

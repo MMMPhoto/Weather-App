@@ -10,6 +10,17 @@
     <link rel="stylesheet" type="text/css" href="./assets/css/style.css" />
 </head>
 <body>
+    <header id="header" class="container">
+        <h1 class="text-center">Weather Dashboard</h1>
+        </h1>
+    </header>
+    <form id="search-form" class="row d-flex justify-content-center">
+        <input id="input-box" type="text" class="col-7 m-2">
+        <button id="submit-button" class="col-3 m-2">Search</button>
+    </form>
+    <div id="recent-searches" class="row d-flex justify-content-center"></div>
+    <div id="current-weather"></div>
+    <div id="five-day-forcast"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="./assets/jqueryUI/jquery-ui-1.13.1.custom/external/jquery/jquery.js"></script>
     <script src="./assets/jqueryUI/jquery-ui-1.13.1.custom/jquery-ui.js"></script>
