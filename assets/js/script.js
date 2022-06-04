@@ -8,6 +8,8 @@ let city = {};
 let apiKey = '3a8edcb6a734dc2c076a743098ed3084';
 let searchQuery;
 let weatherData;
+let lat;
+let long;
 
 
 
@@ -27,9 +29,9 @@ fetch('./assets/js/city.list.json')
         // Refine City List
         for (i = 0; i < rawCityList.length; i++) {
             if (rawCityList[i].state === "") {
-                easyCityList.push(`${rawCityList[i].name},${rawCityList[i].country}`);
+                easyCityList.push(`${rawCityList[i].name}, ${rawCityList[i].country}`);
             } else {
-                easyCityList.push(`${rawCityList[i].name},${rawCityList[i].state},${rawCityList[i].country}`);
+                easyCityList.push(`${rawCityList[i].name}, ${rawCityList[i].state}, ${rawCityList[i].country}`);
             };            
         };
     });
@@ -49,8 +51,8 @@ $(inputBox).autocomplete( {
     source: easyCityList
 });
 
-let weatherFetch = (searchQuery) => {
-    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${searchQuery}&APPID=${apiKey}`)
+let weatherFetch = (lat, lon) => {
+    fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&APPID=${apiKey}`)
     .then(response => {
         console.log(`fetch status: code ${response.status}`);
         return response.json();
@@ -64,12 +66,16 @@ let weatherFetch = (searchQuery) => {
 
 let weatherDisplay = (weatherData) => {
     let weatherContainer = document.createElement('div');
-    weatherContainer.innerHTML = `${weatherData.name}<br>Temp: ${weatherData.main.temp}<br>Wind speed: ${weatherData.wind.speed}<br>Humidity: ${weatherData.main.humidity}%<br>`;
+    weatherContainer.innerHTML = `${cityName}<br>Temp: ${weatherData.current.temp}<br>Wind speed: ${weatherData.current.wind_speed}<br>Humidity: ${weatherData.current.humidity}%<br>UV Index: ${weatherData.current.uvi}`;
     body.append(weatherContainer);
 }
 
 submitButton.addEventListener("click", (event) => {
     event.preventDefault();
     searchQuery = inputBox.value;
-    weatherFetch(searchQuery);
+    let index = easyCityList.indexOf(searchQuery);
+    lat = rawCityList[index].coord.lat;
+    lon = rawCityList[index].coord.lon;
+    cityName = rawCityList[index].name;
+    weatherFetch(lat, lon);
 });
