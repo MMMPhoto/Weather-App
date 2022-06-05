@@ -30,20 +30,21 @@ fetch('https://raw.githubusercontent.com/MMMPhoto/Weather-App/main/assets/js/cit
             };            
         };
     });
-
 console.log(easyCityList);
 
-// Build elements
+//Find existing elements
 let recentSearches = document.getElementById('recent-searches');
 let currentWeather = document.getElementById('current-weather');
-let fiveDayForcast = document.getElementById('five-day-forecast');
+let fiveDayForecast = document.getElementById('five-day-forecast');
 
+// JQuery UI autocompete for input box
 $(inputBox).autocomplete( {
     appendTo: inputForm,
     minLength: 3,
     source: easyCityList
 });
 
+// API call to get weather data
 let weatherFetch = (lat, lon) => {
     fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&APPID=${apiKey}`)
     .then(response => {
@@ -57,13 +58,22 @@ let weatherFetch = (lat, lon) => {
     });
 };
 
+// Display weather data
 let weatherDisplay = (weatherData) => {
-    currentWeather.innerHTML = `${cityName}<br>Temp: ${weatherData.current.temp}<br>Wind speed: ${weatherData.current.wind_speed}<br>Humidity: ${weatherData.current.humidity}%<br>UV Index: ${weatherData.current.uvi}`;
+    inputBox.value = "";
+    currentWeather.innerHTML = `<h2>${cityName}</h2><p>Temp: ${weatherData.current.temp}</p><p>Wind speed: ${weatherData.current.wind_speed}</p><p>Humidity: ${weatherData.current.humidity}%</p><p>UV Index: ${weatherData.current.uvi}</p>`;
+    fiveDayForecast.innerHTML = '<h3>5 Day Forecast:</h3>'
+    for (i = 1; i < 6; i++) {
+        let dailyForecast = document.createElement('li');
+        fiveDayForecast.appendChild(dailyForecast);
+        fiveDayForecast.lastChild.innerHTML = `<h4>Day ${i}:</h4><p>Temp: ${weatherData.daily[i].temp.max}</p><p>Wind speed: ${weatherData.daily[i].wind_speed}</p><p>Humidity: ${weatherData.daily[i].humidity}%</p>`;
+    };
     if (newSearch) {
         createRecentButton();
-    }
+    };
 };
 
+// Create button for recent search
 let createRecentButton = (button) => {
     button = document.createElement('button');
     button.setAttribute('id', `${cityTag}`);
@@ -85,6 +95,7 @@ submitButton.addEventListener("click", (event) => {
     weatherFetch(lat, lon);
 });
 
+// Listen for saved search button click
 recentSearches.addEventListener("click", (event) => {
     event.preventDefault();
     newSearch = false;
