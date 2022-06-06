@@ -8,6 +8,7 @@ let easyCityList = [];
 let apiKey = '3a8edcb6a734dc2c076a743098ed3084';
 let searchQuery;
 let weatherData;
+let iconData;
 let lat;
 let long;
 let newSearch = true;
@@ -65,16 +66,16 @@ let weatherFetch = (lat, lon) => {
 let weatherDisplay = (weatherData) => {
     inputBox.value = "";
     currentWeather.classList.add('current-weather-border');
-    currentWeather.innerHTML = `<h2>${cityName} (${today})</h2><p>Temp: ${Math.round(weatherData.current.temp)}°F</p><p>Wind speed: ${Math.round(weatherData.current.wind_speed)} mph</p><p>Humidity: ${weatherData.current.humidity}%</p><p>UV Index: <span id='uv-color'>${Math.round(weatherData.current.uvi)}</span></p>`;
+    currentWeather.innerHTML = `<h2>${cityName} (${today}) <img class='border border-dark' src=http://openweathermap.org/img/w/${weatherData.current.weather[0].icon}.png /></h2><p>Temp: ${Math.round(weatherData.current.temp)}°F</p><p>Wind speed: ${Math.round(weatherData.current.wind_speed)} mph</p><p>Humidity: ${weatherData.current.humidity}%</p><p>UV Index: <span id='uv-color'>${Math.round(weatherData.current.uvi)}</span></p>`;
     setUVColor(weatherData);
-    fiveDayForecast.innerHTML = `<h3>${cityName} 5 Day Forecast:</h3>`;
+    fiveDayForecast.innerHTML = `<h3>5 Day Forecast:</h3>`;
     for (i = 1; i < 6; i++) {
         let dailyForecast = document.createElement('li');
         fiveDayForecast.appendChild(dailyForecast);
         let relativeDate = new Date();
         relativeDate.setDate(relativeDate.getDate() + i);
         relativeDate = relativeDate.toLocaleDateString();
-        fiveDayForecast.lastChild.innerHTML = `<h4>${relativeDate}:</h4><p>Temp: ${Math.round(weatherData.daily[i].temp.max)}°F</p><p>Wind speed: ${Math.round(weatherData.daily[i].wind_speed)} mph</p><p>Humidity: ${weatherData.daily[i].humidity}%</p>`;
+        fiveDayForecast.lastChild.innerHTML = `<h4>${relativeDate} <img class='border border-dark' src=http://openweathermap.org/img/w/${weatherData.daily[i].weather[0].icon}.png /></h4><p>Temp: ${Math.round(weatherData.daily[i].temp.max)}°F</p><p>Wind speed: ${Math.round(weatherData.daily[i].wind_speed)} mph</p><p>Humidity: ${weatherData.daily[i].humidity}%</p>`;
         dailyForecast.setAttribute('class', 'daily-forecast rounded m-2 p-2');
     };
     if (newSearch) {
