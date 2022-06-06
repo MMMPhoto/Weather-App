@@ -1,7 +1,11 @@
 * {
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    background-color: #ededed;
     overflow-x: hidden;
+}
+
+body {
+    background-color: #ededed;
 }
  
 header {
@@ -12,11 +16,16 @@ header {
 
 h1 {
     color: #e4e4e8;
-    background-color: #4141b4;
+    background-color: #303080;
+}
+
+h2 {
+    background-color: #f4f4f4;
 }
 
 input {
     border-radius: 5px;
+    background-color: #f4f4f4;
 }
 
 button {
@@ -25,8 +34,15 @@ button {
 
 #submit-button {
     color: #f4f4f4;
-    background-color: #3232fd;
+    background-color: #2d2dfb;
 
+}
+
+.current-weather-border {
+    background-color: #f4f4f4;
+    border-style: solid;
+    border-color: #1a1a42;
+    border-width: 2px;
 }
 
 .city-button {
@@ -36,7 +52,7 @@ button {
 
 .active-city-button {
     color: #f4f4f4;
-    background-color: #3232fd;
+    background-color: #2d2dfb;
 }
 
 ul {
@@ -44,8 +60,21 @@ ul {
 }
 
 ul li {
-    color: #e4e4e8;
-    background-color: #4141b4;
+    background-color: #303080;
+}
+
+.daily-forecast {
+    color: #f4f4f4;
+    border-style: solid;
+    border-color: #10102a;
+    border-width: 4px;
+
+}
+
+#uv-color {
+    color: #f4f4f4;
+    border-style: solid;
+    border-color: #000;
 }
 
 h4 {

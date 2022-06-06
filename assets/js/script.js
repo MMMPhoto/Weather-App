@@ -39,6 +39,7 @@ let fiveDayForecast = document.getElementById('five-day-forecast');
 
 // JQuery UI autocompete for input box
 $(inputBox).autocomplete( {
+
     appendTo: inputForm,
     minLength: 3,
     source: easyCityList
@@ -61,20 +62,39 @@ let weatherFetch = (lat, lon) => {
 // Display weather data
 let weatherDisplay = (weatherData) => {
     inputBox.value = "";
-    currentWeather.classList.add('border');
-    currentWeather.innerHTML = `<h2>${cityName}</h2><p>Temp: ${Math.round(weatherData.current.temp)}°F</p><p>Wind speed: ${Math.round(weatherData.current.wind_speed)} mph</p><p>Humidity: ${weatherData.current.humidity}%</p><p>UV Index: ${weatherData.current.uvi}</p>`;
+    currentWeather.classList.add('current-weather-border');
+    currentWeather.innerHTML = `<h2>${cityName}</h2><p>Temp: ${Math.round(weatherData.current.temp)}°F</p><p>Wind speed: ${Math.round(weatherData.current.wind_speed)} mph</p><p>Humidity: ${weatherData.current.humidity}%</p><p>UV Index: <span id='uv-color'>${Math.round(weatherData.current.uvi)}</span></p>`;
+    setUVColor(weatherData);
     fiveDayForecast.innerHTML = '<h3>5 Day Forecast:</h3>'
     for (i = 1; i < 6; i++) {
         let dailyForecast = document.createElement('li');
         fiveDayForecast.appendChild(dailyForecast);
         fiveDayForecast.lastChild.innerHTML = `<h4>Day ${i}:</h4><p>Temp: ${Math.round(weatherData.daily[i].temp.max)}°F</p><p>Wind speed: ${Math.round(weatherData.daily[i].wind_speed)} mph</p><p>Humidity: ${weatherData.daily[i].humidity}%</p>`;
-        dailyForecast.setAttribute('class', 'border border-dark m-2 p-2');
+        dailyForecast.setAttribute('class', 'daily-forecast rounded m-2 p-2');
     };
     if (newSearch) {
         createRecentButton();
     };
 
 };
+
+// UV Index color coding
+let setUVColor = (weatherData) => {
+    let uvColorBox = document.getElementById('uv-color');
+    uvColorBox.setAttribute('class', 'border p-2 rounded');
+    if (Math.round(weatherData.current.uvi) <= 2) {
+        uvColorBox.style.backgroundColor = '#008000';
+    } else if (Math.round(weatherData.current.uvi) <= 5) {
+        uvColorBox.style.backgroundColor = '#FFFF00';
+    } else if (Math.round(weatherData.current.uvi) <= 7) {
+        uvColorBox.style.backgroundColor = '#FFA500';
+    } else if (Math.round(weatherData.current.uvi) <= 10) {
+        uvColorBox.style.backgroundColor = '#FF0000';
+    } else {
+        uvColorBox.style.backgroundColor = '#800080';
+    }
+
+}
 
 // Create button for recent search
 let createRecentButton = (button) => {
