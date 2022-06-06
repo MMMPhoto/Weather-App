@@ -11,6 +11,8 @@ let weatherData;
 let lat;
 let long;
 let newSearch = true;
+let today = new Date();
+today = today.toLocaleDateString();
 
 // Pull City List
 fetch('https://raw.githubusercontent.com/MMMPhoto/Weather-App/main/assets/js/city.list.json')
@@ -63,19 +65,21 @@ let weatherFetch = (lat, lon) => {
 let weatherDisplay = (weatherData) => {
     inputBox.value = "";
     currentWeather.classList.add('current-weather-border');
-    currentWeather.innerHTML = `<h2>${cityName}</h2><p>Temp: ${Math.round(weatherData.current.temp)}°F</p><p>Wind speed: ${Math.round(weatherData.current.wind_speed)} mph</p><p>Humidity: ${weatherData.current.humidity}%</p><p>UV Index: <span id='uv-color'>${Math.round(weatherData.current.uvi)}</span></p>`;
+    currentWeather.innerHTML = `<h2>${cityName} (${today})</h2><p>Temp: ${Math.round(weatherData.current.temp)}°F</p><p>Wind speed: ${Math.round(weatherData.current.wind_speed)} mph</p><p>Humidity: ${weatherData.current.humidity}%</p><p>UV Index: <span id='uv-color'>${Math.round(weatherData.current.uvi)}</span></p>`;
     setUVColor(weatherData);
-    fiveDayForecast.innerHTML = '<h3>5 Day Forecast:</h3>'
+    fiveDayForecast.innerHTML = `<h3>${cityName} 5 Day Forecast:</h3>`;
     for (i = 1; i < 6; i++) {
         let dailyForecast = document.createElement('li');
         fiveDayForecast.appendChild(dailyForecast);
-        fiveDayForecast.lastChild.innerHTML = `<h4>Day ${i}:</h4><p>Temp: ${Math.round(weatherData.daily[i].temp.max)}°F</p><p>Wind speed: ${Math.round(weatherData.daily[i].wind_speed)} mph</p><p>Humidity: ${weatherData.daily[i].humidity}%</p>`;
+        let relativeDate = new Date();
+        relativeDate.setDate(relativeDate.getDate() + i);
+        relativeDate = relativeDate.toLocaleDateString();
+        fiveDayForecast.lastChild.innerHTML = `<h4>${relativeDate}:</h4><p>Temp: ${Math.round(weatherData.daily[i].temp.max)}°F</p><p>Wind speed: ${Math.round(weatherData.daily[i].wind_speed)} mph</p><p>Humidity: ${weatherData.daily[i].humidity}%</p>`;
         dailyForecast.setAttribute('class', 'daily-forecast rounded m-2 p-2');
     };
     if (newSearch) {
         createRecentButton();
     };
-
 };
 
 // UV Index color coding
@@ -92,8 +96,7 @@ let setUVColor = (weatherData) => {
         uvColorBox.style.backgroundColor = '#FF0000';
     } else {
         uvColorBox.style.backgroundColor = '#800080';
-    }
-
+    };
 }
 
 // Create button for recent search
@@ -133,4 +136,3 @@ recentSearches.addEventListener("click", (event) => {
     cityName = rawCityList[index].name;
     weatherFetch(lat, lon);
 });
-
