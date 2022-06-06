@@ -1,12 +1,57 @@
 * {
     font-family: Arial, Helvetica, sans-serif;
     background-color: #fff;
+    overflow-x: hidden;
+}
+ 
+header {
+    box-sizing: border-box;
+    width: 100%;
+    border: 0;
+}
+
+h1 {
+    color: #e4e4e8;
+    background-color: #4141b4;
+}
+
+input {
+    border-radius: 5px;
+}
+
+button {
+    border-radius: 5px;
+}
+
+#submit-button {
+    color: #f4f4f4;
+    background-color: #3232fd;
+
 }
 
 .city-button {
     margin: 2%;
+    background-color: #d2d2d3;
+}
+
+.active-city-button {
+    color: #f4f4f4;
+    background-color: #3232fd;
 }
 
 ul {
     list-style: none;
+}
+
+ul li {
+    color: #e4e4e8;
+    background-color: #4141b4;
+}
+
+h4 {
+    background-color: inherit;
+}
+
+p {
+    background-color: inherit;
 }

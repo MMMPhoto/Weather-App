@@ -46,7 +46,7 @@ $(inputBox).autocomplete( {
 
 // API call to get weather data
 let weatherFetch = (lat, lon) => {
-    fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&APPID=${apiKey}`)
+    fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&units=imperial&APPID=${apiKey}`)
     .then(response => {
         console.log(`fetch status: code ${response.status}`);
         return response.json();
@@ -61,16 +61,19 @@ let weatherFetch = (lat, lon) => {
 // Display weather data
 let weatherDisplay = (weatherData) => {
     inputBox.value = "";
-    currentWeather.innerHTML = `<h2>${cityName}</h2><p>Temp: ${weatherData.current.temp}</p><p>Wind speed: ${weatherData.current.wind_speed}</p><p>Humidity: ${weatherData.current.humidity}%</p><p>UV Index: ${weatherData.current.uvi}</p>`;
+    currentWeather.classList.add('border');
+    currentWeather.innerHTML = `<h2>${cityName}</h2><p>Temp: ${Math.round(weatherData.current.temp)}°F</p><p>Wind speed: ${Math.round(weatherData.current.wind_speed)} mph</p><p>Humidity: ${weatherData.current.humidity}%</p><p>UV Index: ${weatherData.current.uvi}</p>`;
     fiveDayForecast.innerHTML = '<h3>5 Day Forecast:</h3>'
     for (i = 1; i < 6; i++) {
         let dailyForecast = document.createElement('li');
         fiveDayForecast.appendChild(dailyForecast);
-        fiveDayForecast.lastChild.innerHTML = `<h4>Day ${i}:</h4><p>Temp: ${weatherData.daily[i].temp.max}</p><p>Wind speed: ${weatherData.daily[i].wind_speed}</p><p>Humidity: ${weatherData.daily[i].humidity}%</p>`;
+        fiveDayForecast.lastChild.innerHTML = `<h4>Day ${i}:</h4><p>Temp: ${Math.round(weatherData.daily[i].temp.max)}°F</p><p>Wind speed: ${Math.round(weatherData.daily[i].wind_speed)} mph</p><p>Humidity: ${weatherData.daily[i].humidity}%</p>`;
+        dailyForecast.setAttribute('class', 'border border-dark m-2 p-2');
     };
     if (newSearch) {
         createRecentButton();
     };
+
 };
 
 // Create button for recent search
@@ -87,12 +90,16 @@ submitButton.addEventListener("click", (event) => {
     event.preventDefault();
     newSearch = true;
     searchQuery = inputBox.value;
-    let index = easyCityList.indexOf(searchQuery);
-    lat = rawCityList[index].coord.lat;
-    lon = rawCityList[index].coord.lon;
-    cityName = rawCityList[index].name;
-    cityTag = inputBox.value;
-    weatherFetch(lat, lon);
+    if (easyCityList.includes(searchQuery)) {
+        let index = easyCityList.indexOf(searchQuery);
+        lat = rawCityList[index].coord.lat;
+        lon = rawCityList[index].coord.lon;
+        cityName = rawCityList[index].name;
+        cityTag = inputBox.value;
+        weatherFetch(lat, lon);
+    } else {
+        alert('please select a city from the dropdown list');
+    }
 });
 
 // Listen for saved search button click
