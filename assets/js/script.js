@@ -3,11 +3,15 @@ let body = document.body;
 let inputForm = document.getElementById('search-form');
 let inputBox = document.getElementById('input-box');
 let submitButton = document.getElementById('submit-button');
+let recentSearches = document.getElementById('recent-searches');
+let currentWeather = document.getElementById('current-weather');
+let fiveDayForecast = document.getElementById('five-day-forecast');
 let rawCityList = [];
 let easyCityList = [];
 let apiKey = '3a8edcb6a734dc2c076a743098ed3084';
 let searchQuery;
 let weatherData;
+let cityObj;
 let iconData;
 let lat;
 let long;
@@ -35,14 +39,38 @@ fetch('https://raw.githubusercontent.com/MMMPhoto/Weather-App/main/assets/js/cit
     });
 console.log(easyCityList);
 
-//Find existing elements
-let recentSearches = document.getElementById('recent-searches');
-let currentWeather = document.getElementById('current-weather');
-let fiveDayForecast = document.getElementById('five-day-forecast');
+// Create button for recent search
+let createRecentButton = (button) => {
+    button = document.createElement('button');
+    button.setAttribute('id', `${cityTag}`);
+    button.setAttribute('class', 'city-button');
+    button.textContent = cityName;
+    recentSearches.append(button);
+};
+
+// Add item to local storage
+let saveLocalStorage = (cityObj) => {
+    cityObj = {buttonName: `${cityName}`, tagName: `${cityTag}`};
+    recentCities.push(cityObj);
+    localStorage.setItem("recentSearches", JSON.stringify(recentCities));
+};
+
+// Pull recent searches from local storage
+let recentCities = JSON.parse(localStorage.getItem("recentSearches"));
+// Create if recentSearches is null
+if (recentCities === null) {
+    recentCities = [];
+} else {
+    for(i = 0; i < recentCities.length; i++) {
+        cityName = recentCities[i].buttonName;
+        cityTag = recentCities[i].tagName;
+        createRecentButton();
+    };
+};
+console.log(`Recent cities: ${recentCities}`);
 
 // JQuery UI autocompete for input box
 $(inputBox).autocomplete( {
-
     appendTo: inputForm,
     minLength: 3,
     source: easyCityList
@@ -98,15 +126,6 @@ let setUVColor = (weatherData) => {
     } else {
         uvColorBox.style.backgroundColor = '#800080';
     };
-}
-
-// Create button for recent search
-let createRecentButton = (button) => {
-    button = document.createElement('button');
-    button.setAttribute('id', `${cityTag}`);
-    button.setAttribute('class', 'city-button');
-    button.textContent = cityName;
-    recentSearches.append(button);
 };
 
 // Listen for search query
@@ -121,12 +140,13 @@ submitButton.addEventListener("click", (event) => {
         cityName = rawCityList[index].name;
         cityTag = inputBox.value;
         weatherFetch(lat, lon);
+        saveLocalStorage(cityObj);
     } else {
         alert('please select a city from the dropdown list');
     }
 });
 
-// Listen for saved search button click
+// Listen for recent searches button click
 recentSearches.addEventListener("click", (event) => {
     event.preventDefault();
     newSearch = false;
