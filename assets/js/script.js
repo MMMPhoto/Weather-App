@@ -116,14 +116,19 @@ let setUVColor = (weatherData) => {
     let uvColorBox = document.getElementById('uv-color');
     uvColorBox.setAttribute('class', 'border p-2 rounded');
     if (Math.round(weatherData.current.uvi) <= 2) {
+        uvColorBox.style.color = '#FFF';
         uvColorBox.style.backgroundColor = '#008000';
     } else if (Math.round(weatherData.current.uvi) <= 5) {
+        uvColorBox.style.color = '#000';
         uvColorBox.style.backgroundColor = '#FFFF00';
     } else if (Math.round(weatherData.current.uvi) <= 7) {
+        uvColorBox.style.color = '#000';
         uvColorBox.style.backgroundColor = '#FFA500';
     } else if (Math.round(weatherData.current.uvi) <= 10) {
+        uvColorBox.style.color = '#FFF';
         uvColorBox.style.backgroundColor = '#FF0000';
     } else {
+        uvColorBox.style.color = '#FFF';
         uvColorBox.style.backgroundColor = '#800080';
     };
 };
@@ -149,11 +154,13 @@ submitButton.addEventListener("click", (event) => {
 // Listen for recent searches button click
 recentSearches.addEventListener("click", (event) => {
     event.preventDefault();
-    newSearch = false;
-    let recallSearch = event.target.id;
-    let index = easyCityList.indexOf(recallSearch);
-    lat = rawCityList[index].coord.lat;
-    lon = rawCityList[index].coord.lon;
-    cityName = rawCityList[index].name;
-    weatherFetch(lat, lon);
+    if (event.target.classList.contains('city-button')) {
+        let recallSearch = event.target.id;
+        let index = easyCityList.indexOf(recallSearch);
+        newSearch = false;
+        lat = rawCityList[index].coord.lat;
+        lon = rawCityList[index].coord.lon;
+        cityName = rawCityList[index].name;
+        weatherFetch(lat, lon);
+    }
 });
