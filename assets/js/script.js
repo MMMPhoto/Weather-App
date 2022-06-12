@@ -68,7 +68,7 @@ let saveLocalStorage = (cityObj) => {
 // Pull recent searches from local storage
 let recentCities = JSON.parse(localStorage.getItem("recentSearches"));
 // Create if recentSearches is null
-if (recentCities.length === 0 || recentCities === null) {
+if (recentCities === null || recentCities.length === 0) {
     recentCities = [];
 } else {
     createClearButton();
