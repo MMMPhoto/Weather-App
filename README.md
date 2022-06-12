@@ -11,7 +11,7 @@ The other issue was making sure the user searched something within that file, ot
 After those two initial tasks, designing the page was pretty straightforward and reflected work I learned in previous challenges. Adding the API calls, however, really added another dimension to what can be accomplished in web development.
 
 ## [Deployed Application](https://mmmphoto.github.io/Weather-App)
-## [Github Respository](https://github.com/MMMPhoto/Weather-App)
+## [Github Repository](https://github.com/MMMPhoto/Weather-App)
 
 ![Screenshot of Password-Generator](./assets/images/weather-dashboard-screenshot.png)
 
