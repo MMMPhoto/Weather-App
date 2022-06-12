@@ -10,6 +10,7 @@ let rawCityList = [];
 let easyCityList = [];
 let apiKey = '3a8edcb6a734dc2c076a743098ed3084';
 let searchQuery;
+let clearButton;
 let weatherData;
 let cityObj;
 let iconData;
@@ -48,6 +49,15 @@ let createRecentButton = (button) => {
     recentSearches.append(button);
 };
 
+// Create clear button
+let createClearButton = function() {
+    clearButton = document.createElement('button');
+    clearButton.setAttribute('id', 'clear-recent');
+    clearButton.setAttribute('class', 'city-button');
+    clearButton.innerHTML = 'Clear Recent Searches:';
+    recentSearches.append(clearButton);
+};
+
 // Add item to local storage
 let saveLocalStorage = (cityObj) => {
     cityObj = {buttonName: `${cityName}`, tagName: `${cityTag}`};
@@ -58,9 +68,10 @@ let saveLocalStorage = (cityObj) => {
 // Pull recent searches from local storage
 let recentCities = JSON.parse(localStorage.getItem("recentSearches"));
 // Create if recentSearches is null
-if (recentCities === null) {
+if (recentCities.length === 0 || recentCities === null) {
     recentCities = [];
 } else {
+    createClearButton();
     for(i = 0; i < recentCities.length; i++) {
         cityName = recentCities[i].buttonName;
         cityTag = recentCities[i].tagName;
@@ -69,7 +80,13 @@ if (recentCities === null) {
 };
 console.log(`Recent cities: ${recentCities}`);
 
-// JQuery UI autocompete for input box
+// Clear scores from local storage
+let clearLocalStorage = function() {
+    recentCities = [];
+    localStorage.setItem("recentSearches", JSON.stringify(recentCities));
+};
+
+// JQuery UI autocomplete for input box
 $(inputBox).autocomplete( {
     appendTo: inputForm,
     minLength: 3,
@@ -96,7 +113,7 @@ let weatherDisplay = (weatherData) => {
     currentWeather.classList.add('current-weather-border');
     currentWeather.innerHTML = `<h2>${cityName} (${today}) <img class='border border-dark' src=http://openweathermap.org/img/w/${weatherData.current.weather[0].icon}.png /></h2><p>Temp: ${Math.round(weatherData.current.temp)}°F</p><p>Wind speed: ${Math.round(weatherData.current.wind_speed)} mph</p><p>Humidity: ${weatherData.current.humidity}%</p><p>UV Index: <span id='uv-color'>${Math.round(weatherData.current.uvi)}</span></p>`;
     setUVColor(weatherData);
-    fiveDayForecast.innerHTML = `<h3>5 Day Forecast:</h3>`;
+    fiveDayForecast.innerHTML = `<h3 class="col-12">5 Day Forecast:</h3>`;
     for (i = 1; i < 6; i++) {
         let dailyForecast = document.createElement('li');
         fiveDayForecast.appendChild(dailyForecast);
@@ -138,6 +155,9 @@ submitButton.addEventListener("click", (event) => {
     event.preventDefault();
     newSearch = true;
     searchQuery = inputBox.value;
+    if (recentCities.length === 0 || recentCities === null) {
+        createClearButton();
+    };
     if (easyCityList.includes(searchQuery)) {
         let index = easyCityList.indexOf(searchQuery);
         lat = rawCityList[index].coord.lat;
@@ -148,19 +168,24 @@ submitButton.addEventListener("click", (event) => {
         saveLocalStorage(cityObj);
     } else {
         alert('please select a city from the dropdown list');
-    }
+    };
 });
 
 // Listen for recent searches button click
 recentSearches.addEventListener("click", (event) => {
     event.preventDefault();
     if (event.target.classList.contains('city-button')) {
-        let recallSearch = event.target.id;
+        if (event.target == clearButton) {
+            clearLocalStorage();
+            recentSearches.innerHTML = '';
+        } else {
+            let recallSearch = event.target.id;
         let index = easyCityList.indexOf(recallSearch);
         newSearch = false;
         lat = rawCityList[index].coord.lat;
         lon = rawCityList[index].coord.lon;
         cityName = rawCityList[index].name;
         weatherFetch(lat, lon);
-    }
+        };
+    };
 });

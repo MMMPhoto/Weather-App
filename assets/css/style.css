@@ -49,9 +49,9 @@ button {
     background-color: #d2d2d3;
 }
 
-.active-city-button {
+#clear-recent {
     color: #f4f4f4;
-    background-color: #2d2dfb;
+    background-color: #5b5b8f;
 }
 
 ul {
